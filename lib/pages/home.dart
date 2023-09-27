@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List? _tasks;
+  List? tasks;
 
   @override
   void initState() {
@@ -24,8 +24,23 @@ class _HomePageState extends State<HomePage> {
   Future<void> getTasks() async {
     var res = await Supabase.instance.client.from('tasks').select();
     setState(() {
-      _tasks = res;
+      tasks = res as List;
     });
+  }
+  
+  Future<void> updateTask(bool val, int id) async {
+    await Supabase.instance.client
+        .from('tasks')
+        .update({'isDone': val}).match({'id': id});
+    getTasks();
+  }
+
+  Future<void> deleteTask(int id) async {
+    await Supabase.instance.client
+        .from('tasks')
+        .delete()
+        .match({'id': id});
+    getTasks();
   }
 
   @override
@@ -38,19 +53,23 @@ class _HomePageState extends State<HomePage> {
       body: Container(
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: ListView.separated(
-            itemCount: _tasks.length,
+          child: tasks != null ? ListView.separated(
+            itemCount: tasks?.length ?? 0,
             itemBuilder: ((context, index) {
-              final task = _tasks[index];
+              final task = tasks![index];
               return Task(
                 id: task['id'],
                 title: task['title'],
                 isDone: task['isDone'],
+                onUpdate: (bool val) => updateTask(val, task['id']),
+                onDelete: () => deleteTask(task['id']),
               );
             }),
             separatorBuilder: (BuildContext context, int index) =>
                 const SizedBox(height: 16),
-          )),
+          ) : const Center(
+                child: Text("No Data Found"),
+              ),),
     );
   }
 }

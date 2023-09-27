@@ -3,11 +3,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Task extends StatefulWidget {
   const Task(
-      {super.key, required this.id, required this.title, required this.isDone});
+      {super.key, required this.id, required this.title, required this.isDone, required this.onUpdate, required this.onDelete});
 
   final int id;
   final String title;
   final bool isDone;
+  final Future<void> Function(bool) onUpdate;
+  final Future<void> Function() onDelete;
 
   @override
   State<Task> createState() => _TaskState();
@@ -16,16 +18,11 @@ class Task extends StatefulWidget {
 class _TaskState extends State<Task> {
   void _handleDone(bool? val) async {
     final tmp = val ?? false;
-    await Supabase.instance.client
-        .from('tasks')
-        .update({'isDone': tmp}).match({'id': widget.id});
+    widget.onUpdate(tmp);
   }
 
   void _handleDelete() async {
-    await Supabase.instance.client
-        .from('tasks')
-        .delete()
-        .match({'id': widget.id});
+    widget.onDelete();
   }
 
   @override
