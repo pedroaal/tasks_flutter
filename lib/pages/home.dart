@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:my_first_app/widgets/task.dart';
+import 'package:tasks_flutter/widgets/task.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -13,7 +13,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _getTasks = Supabase.instance.client.from('tasks').select();
+  List? _tasks;
+
+  @override
+  void initState() {
+    super.initState();
+    getTasks();
+  }
+
+  Future<void> getTasks() async {
+    var res = await Supabase.instance.client.from('tasks').select();
+    setState(() {
+      _tasks = res;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,32 +36,21 @@ class _HomePageState extends State<HomePage> {
         title: Text(widget.title),
       ),
       body: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: FutureBuilder(
-          future: _getTasks,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            final tasks = snapshot.data!;
-
-            return ListView.separated(
-              itemCount: tasks.length,
-              itemBuilder: ((context, index) {
-                final task = tasks[index];
-                return Task(
-                  title: task['title'],
-                  isDone: task['isDone'],
-                );
-              }),
-              separatorBuilder: (BuildContext context, int index) =>
-                  const SizedBox(height: 16),
-            );
-          },
-        ),
-      ),
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: ListView.separated(
+            itemCount: _tasks.length,
+            itemBuilder: ((context, index) {
+              final task = _tasks[index];
+              return Task(
+                id: task['id'],
+                title: task['title'],
+                isDone: task['isDone'],
+              );
+            }),
+            separatorBuilder: (BuildContext context, int index) =>
+                const SizedBox(height: 16),
+          )),
     );
   }
 }
