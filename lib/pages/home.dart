@@ -16,8 +16,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List? tasks;
-  String task = '';
-
   late TextEditingController _controller;
 
   @override
@@ -40,12 +38,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void handleCreate() async {
-    createTask(task);
+    createTask(_controller.text);
     getTasks();
     _controller.clear();
-    setState(() {
-      task = '';
-    });
   }
 
   @override
@@ -68,11 +63,6 @@ class _HomePageState extends State<HomePage> {
                     border: OutlineInputBorder(),
                     hintText: 'New Task',
                   ),
-                  onChanged: (String value) {
-                    setState(() {
-                      task = value;
-                    });
-                  },
                 ),
               ),
               IconButton(
