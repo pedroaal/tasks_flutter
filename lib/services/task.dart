@@ -5,6 +5,10 @@ Future<List> findTasks() async {
   return res as List;
 }
 
+void createTask(String val) async {
+  await Supabase.instance.client.from('tasks').insert({'title': val});
+}
+
 void updateTask(bool val, int id) async {
   await Supabase.instance.client
       .from('tasks')

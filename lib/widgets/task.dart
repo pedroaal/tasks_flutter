@@ -16,17 +16,17 @@ class Task extends StatefulWidget {
   final Future<void> Function() refetch;
 
   @override
-  State<Task> createState() => _TaskState();
+  State<Task> createState() => TaskState();
 }
 
-class _TaskState extends State<Task> {
-  void _handleDone(bool? val) async {
+class TaskState extends State<Task> {
+  void handleDone(bool? val) async {
     final tmp = val ?? false;
     updateTask(tmp, widget.id);
     widget.refetch();
   }
 
-  void _handleDelete() async {
+  void handleDelete() async {
     deleteTask(widget.id);
     widget.refetch();
   }
@@ -43,7 +43,7 @@ class _TaskState extends State<Task> {
         children: [
           Checkbox(
             value: widget.isDone,
-            onChanged: _handleDone,
+            onChanged: handleDone,
             splashRadius: 8,
           ),
           Text(
@@ -54,7 +54,7 @@ class _TaskState extends State<Task> {
           ),
           const Spacer(),
           IconButton(
-              onPressed: _handleDelete,
+              onPressed: handleDelete,
               icon: const Icon(
                 Icons.delete,
                 color: Colors.white,
