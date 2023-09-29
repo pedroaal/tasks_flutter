@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-Future<void> main() async {
+Future<void> initSupabase() async {
   await Supabase.initialize(
     url: 'https://tdvwixtypvptjewsemwa.supabase.co',
     anonKey:

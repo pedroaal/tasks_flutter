@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:tasks_flutter/services/task.dart';
+import 'package:tasks_flutter/domain/task.dart';
 
-import 'package:tasks_flutter/widgets/task.dart';
+import 'package:tasks_flutter/application/task.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
